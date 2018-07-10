@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qFun.qFun.modules.attendance.dao.MonthAttDao">
+	
+	<insert id="insertBatch">
+		INSERT INTO month_att
+	            (id, u_id, att_days,thing_leave,sick_leave,paid_leave,late_times,late_pay,late_days,perfect_attAward,night_catAward,month,year)
+	    VALUES
+	    <foreach collection ="list" item="monthAtt" separator =",">
+	         (#{monthAtt.id}, #{monthAtt.uId}, #{monthAtt.attDays},#{monthAtt.thingLeave},
+	         #{monthAtt.sickLeave},#{monthAtt.paidLeave},#{monthAtt.lateTimes},#{monthAtt.latePay},
+	         #{monthAtt.lateDays},#{monthAtt.perfectAttAward},#{monthAtt.night_catAward},
+	         #{monthAtt.month},#{monthAtt.year})
+	    </foreach >
+	</insert>
+	
+	<select id="getMonthAttList">
+		SELECT 
+			m.id,
+			m.u_id,
+			m.att_days,
+			m.thing_leave,
+			m.sick_leave,
+			m.paid_leave,
+			m.late_times,
+			m.late_pay,
+			m.late_days,
+			m.perfect_attAward,
+			m.night_catAward,
+			m.month,
+			m.year,
+			u.name AS `user.name`
+		FROM month_att AS m 
+		INNER JOIN sys_user AS s 
+		ON m.u_id = s.id
+		WHERE 0=0
+		<if test="month ! null">
+			AND m.month = #{month}
+		</if>
+		<if test="year != null">
+			AND m.year = #{year}
+		</if>
+		<if test="user != null ">
+			AND u.name LIKE CONCAT('%',#{user.name},'%')
+		</if>
+	</select>
+	
+	
+	<insert id="insert">
+		insert into month_att 
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+				id,
+			<if test="uId != null">
+				u_id,
+			</if>
+			<if test="attDays != null ">
+				att_days,
+			</if>
+			<if test="thingLeave != null ">
+				thing_leave,
+			</if>
+			<if test="sickLeave != null ">
+				sick_leave,
+			</if>
+			<if test="paidLeave != null ">
+				paid_leave,
+			</if>
+			<if test="lateTimes != null "> 
+				late_times,
+			</if>
+			<if test="latePay != null ">
+				late_pay,
+			</if>
+			<if test="lateDays != null ">
+				late_days,
+			</if>
+			<if test="perfectAttAward != null ">
+				perfect_attAward,
+			</if>
+			<if test="nightCatAward != null ">
+				night_catAward,
+			</if>
+			<if test="month != null">
+				month,
+			</if>
+			<if test="year != null">
+				year,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+				#{id},
+			<if test="uId != null">
+				#{uId},
+			</if>
+			<if test="attDays != null ">
+				#{attDays},
+			</if>
+			<if test="thingLeave != null ">
+				#{thingLeave},
+			</if>
+			<if test="sickLeave != null ">
+				#{sickLeave},
+			</if>
+			<if test="paidLeave != null ">
+				#{paidLeave},
+			</if>
+			<if test="lateTimes != null ">
+				#{lateTimes},
+			</if>
+			<if test="latePay != null ">
+				#{latePay},
+			</if>
+			<if test="lateDays != null ">
+				#{lateDays},
+			</if>
+			<if test="perfectAttAward != null">
+				#{perfectAttAward},
+			</if>
+			<if test="nightCatAward != null">
+				#{nightCatAward},
+			</if>
+			<if test="month != null ">
+				#{month},
+			</if>
+			<if test="year != null ">
+				#{year},
+			</if>
+		</trim>	
+	</insert>
+	
+	<select id="findList" resultType="MonthAtt">
+		select 
+			m.id,
+			m.u_id,
+			m.att_days,
+			m.thing_leave,
+			m.sick_leave,
+			m.paid_leave,
+			m.late_times,
+			m.late_pay,
+			m.late_days,
+			m.perfect_attAward,
+			m.night_catAward,
+			m.month,
+			m.year,
+			s.name as `user.name`,
+			s.enrollNumber as `user.enrollNumber`,
+			s.login_name as `user.loginName`
+		from month_att  as m
+		inner join sys_user as s
+		on m.u_id = s.id
+		where 0=0 
+		<if test="uId != null">
+			and m.u_id = #{uId}
+		</if>
+		<if test="month != null">
+			and m.month = #{month}
+		</if>
+		<if test="year != null">
+			and m.year = #{year}
+		</if>
+		<if test="user.name != null">
+			and s.name like concat('%',#{user.name},'%')
+		</if>
+		<if test="user.loginName != null">
+			and s.login_name like concat('%',#{user.loginName},'%')
+		</if>
+		<if test="user.enrollNumber != null">
+			and s.enrollNumber = #{user.enrollNumber}
+		</if>
+		order by s.enrollNumber,m.month,m.year  desc
+	</select>
+</mapper>

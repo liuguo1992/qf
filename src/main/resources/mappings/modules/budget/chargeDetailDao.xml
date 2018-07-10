@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qFun.qFun.modules.apply.dao.ChargeDetailDao">
+	<!-- <sql id="getList">
+		b.b_id,
+		b.u_id,
+		b.money,
+		b.b_status,
+		b.p_id,
+		b.p_status,
+		b.result,
+		b.b_note,
+		b.p_note,
+		b.p_date,
+		b.start_date,
+		b.end_date,
+		b.step,
+		b.type,
+		u.name as `user.name`,
+		r.status as `budgetRecord.status`,
+		r.note as `budgetRecord.note`
+	</sql>
+	<select id = "findList" resultType = "Budget">
+		select <include refid="getList"/>
+		from budget as b 
+		left join sys_user as u on b.p_id = u.id
+		left join budgetRecord as r on b.b_id = r.b_id
+		where 0=0 
+			<if test="bId != null "> 
+				and b.u_id = #{bId}
+			</if>
+			<if test="pId != null">
+				and b.p_id = #{pId}
+			</if>
+		order by b.end_date,b.p_date desc 
+	</select>
+	 -->
+	
+	<select id="getByBudgetId" resultType="ChargeDetail" parameterType="java.lang.String">
+		select *
+			from charge_detail as c 
+		where c.b_id = #{bId}
+	</select>
+	
+	<insert id="insert">
+		insert into charge_detail
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+				id,
+			<if test="bId != null">
+				b_id,
+			</if>
+			<if test="money != null ">
+				money,
+			</if>
+			<if test="cAmout != null ">
+				c_amout,
+			</if>
+			<if test="lAmout != null ">
+				l_amout,
+			</if>
+			<if test="rAmout != null ">
+				r_amout,
+			</if>
+			<if test="rUnit != null ">
+				r_unit,
+			</if>
+			<if test="aBank != null ">
+				a_bank,
+			</if>
+			<if test="bAccout != null">
+				b_accout,
+			</if>
+			<if test="pMethod != null ">
+				p_method,
+			</if>
+			<if test="notes != null ">
+				notes,
+			</if>
+			<if test="summary != null ">
+				summary,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			#{id},
+			<if test="bId != null">
+				#{bId},
+			</if>
+			<if test="money != null ">
+				#{money},
+			</if>
+			<if test="cAmout != null ">
+				#{cAmout},
+			</if>
+			<if test="lAmout != null ">
+				#{lAmout},
+			</if>
+			<if test="rAmout != null ">
+				#{rAmout},
+			</if>
+			<if test="rUnit != null ">
+				#{rUnit},
+			</if>
+			<if test="aBank != null ">
+				#{aBank},
+			</if>
+			<if test="bAccout != null ">
+				#{bAccout},
+			</if>
+			<if test="pMethod != null ">
+				#{pMethod},
+			</if>
+			<if test="notes != null">
+				#{notes},
+			</if>
+			<if test="summary != null ">
+				#{summary},
+			</if>
+		</trim>
+	</insert>
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
+
+	<!-- 1.托管要制定的任务 -->
+	<bean id="myJob" class="com.qFun.qFun.modules.attendance.job.AttLogJob"></bean>
+
+	<!-- 2.定义任务列表 -->
+	<bean id="myJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 定义执行任务的类 -->
+		<property name="targetObject" ref="myJob" />
+		<!-- 定义制定执行的方法 -->
+		<property name="targetMethod" value="excute" />
+	</bean>
+	
+	<bean id="myJobDetail_2" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 定义执行任务的类 -->
+		<property name="targetObject" ref="myJob" />
+		<!-- 定义制定执行的方法 -->
+		<property name="targetMethod" value="doMonthAttLog" />
+	</bean>
+
+	<!-- 3.定义触发器 -->
+	<bean id="myTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<!-- 制定触发的任务列表 -->
+		<property name="jobDetail" ref="myJobDetail" />
+		<property name="cronExpression">
+			<!-- 每天23:55执行一次 -->
+		 		<!-- <value>0 55 23 * * ? </value> --> 
+			 <!-- <value>0 0/3 * * * ?</value> -->
+			 	 <value>0 0 4 * * ?</value> 
+			 	 <!-- <value>0 0/10 * * * ?</value>  -->
+		</property>
+	</bean>
+	
+	<!-- 3.定义触发器 -->
+	<bean id="myTrigger_2" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+		<!-- 制定触发的任务列表 -->
+		<property name="jobDetail" ref="myJobDetail_2" />
+		<property name="cronExpression"> 
+			<!-- 每月2号凌晨5点执行 --> 
+			 <value>0 0 5 2 * ? </value>
+			<!--  <value>0 0/3 * * * ?</value> -->
+		</property>
+	</bean>
+
+	<!-- 4.定义调度器 -->
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers"> 
+			<array>
+				<ref bean="myTrigger" />
+				<ref bean="myTrigger_2" />
+			</array>
+		</property>
+	</bean>
+	
+</beans>

@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qFun.qFun.modules.apply.dao.BudgetRecordDao">
+	<sql id="getList">
+		r.id,
+		r.t_id,
+		r.u_id,
+		r.status,
+		r.result,
+		r.note,
+		r.is_del,
+		r.create_Date,
+		u.name as `user.name`,
+		u.login_name as `user.loginName`,
+		b.money as `budget.money`,
+		b.start_date as `budget.startDate`,
+		b.b_status as `budget.bStatus`,
+		b.b_note as `budget.bNote`,
+		b.step as `budget.step`,
+		b.type as `budget.type`,
+		y.name as `role.name`
+	</sql>
+	<select id = "findList" resultType = "BudgetRecord">
+		select <include refid="getList"/>
+		from budgetRecord as r
+		inner join budget as b on r.t_id = b.b_id
+		left join sys_user as u on b.u_id = u.id
+		left join sys_user_role as s on r.u_id = s.user_id
+		left join sys_role as y on s.role_id = y.id
+		where 0=0 
+			 <if test="uId != null "> 
+				and r.u_id = #{uId}
+			</if>
+			<if test="tId != null ">
+				and r.t_id = #{tId}
+			</if>
+			<if test="user.name != null ">
+				and u.name like concat('%',#{user.name},'%')
+			</if>
+			<if test="user.loginName != null ">
+				and u.login_name like concat('%',#{user.loginName},'%')
+			</if>
+			<if test="budget.startDate != null">
+				and b.start_date between #{budget.startDate} and #{budget.endDate}
+			</if>
+			<if test="status != null ">
+				and r.status = #{status}
+			</if>
+		order by b.end_date,b.p_date desc 
+	</select>
+	
+	<select id="find" resultType = "BudgetRecord">
+		select <include refid="getList"/>
+		from budgetRecord as r
+		inner join budget as b on r.t_id = b.b_id
+		left join sys_user as u on r.u_id = u.id
+		left join sys_user_role as s on r.u_id = s.user_id
+		left join sys_role as y on s.role_id = y.id
+		where 0=0 
+			 <if test="uId != null "> 
+				and r.u_id = #{uId}
+			</if>
+			<if test="tId != null ">
+				and r.t_id = #{tId}
+			</if>
+			<if test="user.name != null ">
+				and u.name like concat('%',#{user.name},'%')
+			</if>
+			<if test="user.loginName != null ">
+				and u.login_name like concat('%',#{user.loginName},'%')
+			</if>
+			<if test="budget.startDate != null">
+				and b.start_date between #{budget.startDate} and #{budget.endDate}
+			</if>
+			<if test="status != null ">
+				and r.status = #{status}
+			</if>
+		order by b.end_date,b.p_date desc 
+	</select>
+	
+	<select id = "get" resultType = "BudgetRecord" >
+		select 
+			r.id,
+			r.t_id,
+			r.u_id,
+			r.status,
+			r.result,
+			r.note,
+			r.is_del,
+			r.create_Date,
+			u.name as `user.name`,
+			b.money as `budget.money`,
+			b.start_date as `budget.startDate`,
+			b.b_status as `budget.bStatus`,
+			b.b_note as `budget.bNote`,
+			b.type as `budget.type`,
+			b.step as `budget.step`
+		from budgetRecord as r
+		inner join budget as b on r.t_id = b.b_id
+		left join sys_user as u on b.u_id = u.id
+		where 0=0 
+			
+				and r.id = #{id}
+			
+		order by b.end_date,b.p_date desc 
+	</select>
+	
+	<select id = "getParam" resultType = "BudgetRecord" parameterType="hashmap">
+		select 
+			r.id,
+			r.t_id,
+			r.u_id,
+			r.status,
+			r.result,
+			r.note,
+			r.is_del,
+			r.create_Date,
+			u.name as `user.name`,
+			b.money as `budget.money`,
+			b.start_date as `budget.startDate`,
+			b.b_status as `budget.bStatus`,
+			b.b_note as `budget.bNote`,
+			b.type as `budget.type`,
+			b.step as `budget.step`
+		from budgetRecord as r
+		inner join budget as b on r.t_id = b.b_id
+		left join sys_user as u on b.u_id = u.id
+		where 0=0 
+			<if test="id != null ">
+				and r.id = #{id}
+			</if>
+			<if test="uId != null ">
+				and r.u_id = #{uId}
+			</if>
+			<if test="tId != null">
+				and r.t_id = #{tId}
+				</if>
+		order by b.end_date,b.p_date desc 
+	</select>
+	
+	<select id="getParams"  resultType = "BudgetRecord" parameterType="hashmap">
+		select * from budgetRecord as b where b.tId = #{tId} and b.u_id = #{uId}
+	</select>
+	
+	<insert id="insert" >
+		insert into budgetRecord 
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			id,
+			<if test="tId != null">
+				t_id,
+			</if>
+			<if test="uId != null " >
+				u_id,
+			</if>
+			<if test="result != null">
+				result,
+			</if>
+			<if test="status != null ">
+				status,
+			</if>
+			<if test="note != null ">
+				note,
+			</if>
+			<if test="isDel !=null ">
+				is_del,
+			</if>			
+			<if test="createDate != null">
+				create_date,
+			</if>
+			</trim>
+    	<trim prefix="values (" suffix=")" suffixOverrides="," >
+    		#{id},
+    		<if test="tId != null">
+				#{tId},
+			</if>
+			<if test="uId != null " >
+				#{uId},
+			</if>
+			<if test="result != null">
+				#{result},
+			</if>
+			<if test="status != null ">
+				#{status},
+			</if>
+			<if test="note != null ">
+				#{note},
+			</if>
+			<if test="isDel !=null ">
+				#{isDel},
+			</if>			
+			<if test="createDate != null">
+				#{createDate},
+			</if>
+    	</trim>
+	</insert>
+	
+	<update id="updateBudgetRecord" parameterType="BudgetRecord">
+		update budgetrecord 
+		<set>
+			<if test="result != null ">
+				result = #{result},
+			</if>
+			<if test="status != null ">
+				status = #{status},
+			</if>
+			<if test="note != null ">
+				note = #{note},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel},
+			</if>		
+		</set> 
+		where id = #{id}	
+	</update>
+	
+	
+	<delete id="delete">
+	</delete>
+	
+	
+	<!-- 查询请假审批列表 -->
+	<select id="getPage" resultType = "BudgetRecord">
+		select 
+			u.name as `user.name`,
+			u.login_name as `user.loginName`,
+			l.reason as `leave_approval.reason`,
+			l.start_date as `leave_approval.startDate`,
+			l.end_date as `leave_approval.endDate`,
+			l.days as `leave_approval.days`,
+			l.note as `leave_approval.note`,
+			r.id,
+			r.create_date ,
+			r.status,
+			r.note,
+			a.b_status as `approval.bStatus`,
+			a.start_date as `approval.startDate`
+		from budgetRecord as r
+		left join approval as a on r.t_id = a.id
+		left join leave_approval as l on a.t_id = l.id
+		left join sys_user as u on a.u_id = u.id 
+		where 0=0 and a.type = 2
+			<if test="uId != null ">
+				and r.u_id = #{uId}
+			</if>
+			<if test="user.name != null ">
+				and u.name like concat('%',#{user.name},'%')
+			</if>
+			<if test="user.loginName != null ">
+				and u.login_name like concat('%',#{user.loginName},'%')
+			</if>
+			<if test="approval.startDate != null">
+				and a.start_date between #{approval.startDate} and #{approval.endDate}
+			</if>
+			<if test="status != null ">
+				and r.status = #{status}
+			</if>
+		order by a.start_date
+	</select>
+	
+	<select id="getLeaveById" resultType = "BudgetRecord">
+		select 
+			r.id,
+			r.t_id,
+			u.name as `user.name`,
+			l.type as `leave_approval.type`,
+			l.reason as `leave_approval.reason`,
+			l.start_date as `leave_approval.startDate`,
+			l.end_date as `leave_approval.endDate`,
+			l.days as `leave_approval.days`
+		from budgetRecord as r 
+		left join approval as a on r.t_id = a.id
+		left join sys_user as u on a.u_id = u.id
+		left join leave_approval as l on a.t_id = l.id
+		where r.id = #{id}
+	</select>
+	
+	<select id="getById" resultType = "BudgetRecord">
+		select * from budgetRecord where id = #{id}
+	</select>
+</mapper>

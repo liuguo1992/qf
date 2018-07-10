@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qFun.qFun.modules.apply.dao.LeaveApprovalDao">
+	
+	
+	
+	
+	<insert id="insert">
+		insert into leave_approval
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+				id,
+			<if test="uId != null">
+				u_id,
+			</if>
+			<if test="type != null ">
+				type,
+			</if>
+			<if test="startDate != null ">
+				start_date,
+			</if>
+			<if test="endDate != null ">
+				end_date,
+			</if>
+			<if test="days != null ">
+				days,
+			</if>
+			<if test="note != null "> 
+				note,
+			</if>
+			<if test="reason != null ">
+				reason,
+			</if>
+			<if test="createDate != null ">
+				create_date,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+				#{id},
+			<if test="uId != null">
+				#{uId},
+			</if>
+			<if test="type != null ">
+				#{type},
+			</if>
+			<if test="startDate != null ">
+				#{startDate},
+			</if>
+			<if test="endDate != null ">
+				#{endDate},
+			</if>
+			<if test="days != null ">
+				#{days},
+			</if>
+			<if test="note != null ">
+				#{note},
+			</if>
+			<if test="reason != null ">
+				#{reason},
+			</if>
+			<if test="createDate != null ">
+				#{createDate},
+			</if>
+		</trim>
+	</insert>
+	
+	
+	
+	<select id="getByuserIdAndStatus">
+		select 
+			l.id,
+			l.u_id,
+			l.type,
+			l.start_date,
+			l.end_date,
+			l.days,
+			l.note,
+			l.reason,
+			l.create_date,
+			l.status
+		from leave_approval as l 
+		where l.u_id = #{uId} and l.status = #{status}
+	</select>
+	
+	
+	<select id="getParams" resultType="LeaveApproval">
+		select 
+			l.id,
+			l.u_id,
+			l.type,
+			l.start_date,
+			l.end_date,
+			l.days,
+			l.note,
+			l.reason,
+			l.create_date,
+			l.status
+		from leave_approval as l 
+		where 0=0
+		<if test="sTime != null ">
+			<!-- and (DATE_FORMAT(l.start_date,'%Y-%m-%d %H:%i')>=DATE_FORMAT(sTime,'%Y-%m-%d %H:%i' )) -->
+			and ((l.start_date between #{sTime} and #{eTime})  and (l.end_date  > #{sTime})
+			
+			or  (l.start_date between #{qTime} and #{sTime})  and (l.end_date  > #{qTime}) ) 
+			
+			<!-- qTime 前一个月的第一天    sTime 当前月的第一天            sTime   后一个月的第一天  -->
+ 		</if>
+ 		<if test="eTime != null ">
+ 			<!-- and DATE_FORMAT(l.endt_date,'%Y-%m-%d %H:%i') <= DATE_FORMAT(eTime,'%Y-%m-%d %H:%i' ) -->
+ 			
+ 		</if>
+		<if test="type != null">
+			and l.type = #{type}
+		</if>
+		<if test="uId != null">
+			and l.u_id = #{uId}
+		</if>
+	</select>
+</mapper>

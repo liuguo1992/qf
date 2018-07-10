@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qFun.qFun.modules.attendance.dao.DayAttDao">
+
+
+	<select id="findList"  resultType = "DayAtt">
+		select 
+			d.u_id,
+			d.on_workTime,
+			d.off_workTime,
+			d.is_late,
+			d.late_time,
+			d.work_time,
+			d.is_completion,
+			d.is_leave,
+			d.year,
+			d.month,
+			d.isWork,
+			d.is_overTime,
+			d.leave_early,
+			u.name as  `user.name`,
+			u.enrollNumber as `user.enrollNumber`
+		from day_att as d
+		 inner join sys_user as u on d.u_id = u.id
+		 where  0=0 
+		 	<if test="uId != null ">
+		 		and d.u_id = #{uId}
+		 	</if>
+		 	<if test="year != null ">
+		 		and d.year = #{year}
+		 	</if>
+		 	<if test="month != null ">
+		 		and d.month = #{month}
+		 	</if>
+		order by work_time desc
+	</select>
+	
+	<insert id="insert">
+		insert into day_att 
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+				id,
+			<if test="uId != null">
+				u_id,
+			</if>
+			<if test="onWorkTime != null ">
+				on_workTime,
+			</if>
+			<if test="offWorkTime != null ">
+				off_workTime,
+			</if>
+			<if test="isLate != null ">
+				is_late,
+			</if>
+			<if test="lateTime != null ">
+				late_time,
+			</if>
+			<if test="workTime != null "> 
+				work_time,
+			</if>
+			<if test="isCompletion != null ">
+				is_completion,
+			</if>
+			<if test="isLeave != null ">
+				is_leave,
+			</if>
+			<if test="year != null ">
+				year,
+			</if>
+			<if test="month != null ">
+				month,
+			</if>
+			<if test="isWork != null">
+				isWork,
+			</if>
+			<if test="leaveEarly != null">
+				leave_early,
+			</if>
+			<if test="isOverTime">
+				is_overTime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+				#{id},
+			<if test="uId != null">
+				#{uId},
+			</if>
+			<if test="onWorkTime != null ">
+				#{onWorkTime},
+			</if>
+			<if test="offWorkTime != null ">
+				#{offWorkTime},
+			</if>
+			<if test="isLate != null ">
+				#{isLate},
+			</if>
+			<if test="lateTime != null ">
+				#{lateTime},
+			</if>
+			<if test="workTime != null ">
+				#{workTime},
+			</if>
+			<if test="isCompletion != null ">
+				#{isCompletion},
+			</if>
+			<if test="isLeave != null ">
+				#{isLeave},
+			</if>
+			<if test="year != null ">
+				#{year},
+			</if>
+			<if test="month != null ">
+				#{month},
+			</if>
+			<if test="isWork != null">
+				#{isWork},
+			</if>
+			<if test="leaveEarly != null">
+				#{leaveEarly},
+			</if>
+			<if test="isOverTime">
+				#{isOverTime},
+			</if>
+		</trim>
+	</insert>
+
+		
+	<select id="getParamList" resultType="DayAtt">
+		select 
+			d.id,
+			d.u_id,
+			d.on_workTime,
+			d.off_workTime,
+			d.is_late,
+			d.work_time,
+			d.late_time,
+			d.is_completion,
+			d.is_leave,
+			d.year,
+			d.month,
+			d.isWork,
+			d.over_type,
+			d.leave_early,
+			d.is_overTime 
+		from day_att as d
+		where 0=0
+		<if test="uId != null">
+			and d.u_id = #{uId}
+		</if>
+		<if test="year != null">
+			and d.year = #{year}
+		</if>
+		<if test="month != null">
+			and d.month = #{month}
+		</if>
+		<if test="workTime != null ">
+			and d.work_time = #{workTime}
+		</if>
+	order by d.work_time desc
+	</select>
+	
+	
+	<update id="update" parameterType="DayAtt">
+		update day_att 
+			<set>
+				<if test="uId != null ">
+					u_id = #{uId},
+				</if>
+				<!-- <if test="onWorkTime != null ">
+					on_workTime = ${onWorkTime},
+				</if>
+				<if test="offWorkTime != null ">
+					off_workTime = #{offWorkTime},
+				</if> -->
+				<if test="isLate != null ">
+					is_late = #{isLate},
+				 </if>
+				 <if test="lateTime != null">
+				 	late_time = #{lateTime},
+				 </if> 
+				 <if test="isCompletion">
+				 	is_completion = #{isCompletion},
+				 </if>
+				 <if test="isLeave != null ">
+				 	is_leave = #{isLeave},
+				 </if>
+				 <if test="year != null">
+				 	year = #{year},
+				 </if>
+				 <if test="month != null">
+				 	month = #{month},
+				 </if>
+				 <if test="isWork != null ">
+				 	isWork = #{isWork},
+				 </if>
+				 <if test="leaveEarly != null ">
+				 	leave_early = #{leaveEarly},
+				 </if>
+				 <if test="isOverTime != null">
+				 	is_overTime = #{isOverTime},
+				 </if>
+				 <if test="overType != null">
+				 	over_type = #{overType},
+				 </if>
+			</set>
+		where id = #{id}
+	</update>
+</mapper>

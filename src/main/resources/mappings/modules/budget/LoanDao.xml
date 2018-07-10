@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qFun.qFun.modules.apply.dao.LoanDao">
+	<sql id="getList">
+		a.id as `approval.id`,
+		a.u_id as `approval.uId`,
+		a.t_id as `approval.tId`,
+		a.b_status as `approval.bStatus`,
+		a.p_id as `approval.pId`,
+		a.p_status as `approval.pStatus`,
+		a.result as `approval.result`,
+		a.p_date as `approval.pDate`,
+		a.start_date as `approval.startDate`,
+		a.step as `approval.step`,
+		a.is_del as `approval.isDel`,
+		l.id,
+		l.type,
+		l.create_date,
+		l.reason,
+		l.money,
+		l.is_repay,
+		l.loan_date,
+		l.repay_date,
+		u.name as `user.name`
+	</sql>
+	<select id = "findList" resultType = "Loan">
+		select <include refid="getList"/>
+		from loan as l 
+		inner join approval as a on l.id = a.t_id
+		left join sys_user as u on a.p_id = u.id
+		where 0=0  and a.type = #{type}
+			<if test="id != null "> 
+				and a.id = #{id}
+			</if>
+			<if test="uId != null ">
+				and a.u_id = #{uId}
+			</if>
+		order by l.create_date desc 
+	</select>
+	 
+	<select id="getPage" resultType = "Loan">
+		select 
+			u.name as `user.name`,
+			l.reason,
+			l.money,
+			l.type,
+			l.create_date,
+			l.loan_date,
+			l.repay_date,
+			a.b_status as `approval.bStatus`,
+			b.id as `budgetRecord.id`,
+			b.status as `budgetRecord.status`
+		from loan as l 
+		inner join approval as a on l.id = a.t_id
+		right join budgetRecord as b on a.id = b.t_id
+		left join sys_user as u on l.u_id = u.id
+		where a.type = #{type}
+		and b.u_id = #{user.id}
+			<if test="user.name != null ">
+				and u.name like concat('%',#{user.name},'%')
+			</if>
+			<if test="user.loginName != null ">
+				and u.login_name like concat('%',#{user.loginName},'%')
+			</if>
+			<if test="approval.startDate != null">
+				and l.create_date between #{approval.startDate} and #{approval.endDate}
+			</if>
+			<if test="budgetRecord.status != null ">
+				and b.status = #{budgetRecord.status}
+			</if>
+		order by l.create_date desc 
+	</select>
+	
+	<insert id="insert">
+		insert into loan
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+				id,
+			<if test="money != null">
+				money,
+			</if> 
+			<if test="reason != null">
+				reason,
+			</if>
+			<if test="cAmout != null ">
+				c_amout,
+			</if>
+			<if test="lAmout != null ">
+				l_amout,
+			</if>
+			<if test="rAmout != null ">
+				r_amout,
+			</if>
+			<if test="rUnit != null ">
+				r_unit,
+			</if>
+			<if test="aBank != null ">
+				a_bank,
+			</if>
+			<if test="bAccout != null ">
+				b_accout,
+			</if>
+			<if test="pMethod != null ">
+				p_method,
+			</if>
+			<if test="type != null ">
+				type,
+			</if>
+			<if test="createDate != null ">
+				create_date,
+			</if>
+			<if test="uId != null ">
+				u_id,
+			</if>
+			<if test="isRepay != null ">
+				is_repay,
+			</if>
+			<if test="loanDate != null ">
+				loan_date,
+			</if>
+			<if test="repayDate != null ">
+				repay_date,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+				#{id},
+			<if test="money != null">
+				#{money},
+			</if>
+			<if test="reason != null">
+				#{reason},
+			</if>
+			<if test="cAmout != null ">
+				#{cAmout},
+			</if>
+			<if test="lAmout != null ">
+				#lAmout},
+			</if>
+			<if test="rAmout != null ">
+				#{rAmout},
+			</if>
+			<if test="rUnit != null ">
+				#{rUnit},
+			</if>
+			<if test="aBank != null ">
+				#{aBank},
+			</if>
+			<if test="bAccout != null ">
+				#{bAccout},
+			</if>
+			<if test="pMethod != null ">
+				#{pMethod},
+			</if>
+			<if test="type != null ">
+				#{type},
+			</if>
+			<if test="createDate != null ">
+				#{createDate},
+			</if>
+			<if test="uId != null ">
+				#{uId},
+			</if>
+			<if test="isRepay != null ">
+				#{isRepay},
+			</if>
+			<if test="loanDate != null ">
+				#{loanDate},
+			</if>
+			<if test="repayDate != null ">
+				#{repayDate},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="update">
+		update loan 
+		<set>
+			<if test="money != null">
+				money = #{money},
+			</if>
+			<if test="reason != null">
+				reason = #{reason},
+			</if>
+			<if test="type != null ">
+				type = #{type},
+			</if>
+			<if test="createDate != null ">
+				create_date = #{createDate},
+			</if>
+			<if test="uId != null ">
+				u_id = #{uId},
+			</if>
+			<if test="isReapy != null ">
+				is_reapy = #{isReapy},
+			</if>
+		</set>
+	   where id = #{id}
+	</update>
+	
+	<select id="get" resultType = "Loan">
+		select * from loan where id = #{id}
+	</select>
+	<select id="getLoanAndUser" resultType = "Loan">
+		select 
+			l.id,
+			l.money,
+			l.reason,
+			l.type,
+			l.create_date,
+			l.u_id,
+			l.is_repay,
+			l.loan_date,
+			l.repay_date,
+			l.note,
+			l.c_amout,
+			l.l_amout,
+			l.r_amout,
+			l.r_unit,
+			l.a_bank,
+			l.b_accout,
+			l.p_method,
+			u.name as `user.name`,
+			oi.name as `office.name`
+		from loan as l 
+		left join sys_user as u on l.u_id = u.id
+		left join sys_office as o on u.office_id = o.id
+		left join sys_office as oi on oi.id=o.parent_id
+		where l.id = #{id}
+	</select>
+	
+	<select id="getBudgetRecord" resultType="Loan">
+		select
+		l.id, 
+		b.note as `budgetRecord.note`,
+		b.create_date as `budgetRecord.createDate`,
+		b.result as `budgetRecord.result`,
+		u.name as `user.name`,
+		y.name as `role.name`
+		from loan as l 
+		left join approval as a on l.id = a.t_id
+		right join budgetRecord as b on a.id = b.t_id
+		left join sys_user as u on b.u_id = u.id
+		left join sys_user_role as s on b.u_id = s.user_id
+		left join sys_role as y on s.role_id = y.id
+		where l.id=#{id}
+	</select>
+	
+	
+</mapper>

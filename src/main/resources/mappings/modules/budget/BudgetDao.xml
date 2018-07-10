@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qFun.qFun.modules.apply.dao.BudgetDao">
+	<sql id="getList">
+		b.b_id,
+		b.u_id,
+		b.money,
+		b.b_status,
+		b.p_id,
+		b.p_status,
+		b.result,
+		b.b_note,
+		b.p_note,
+		b.p_date,
+		b.start_date,
+		b.end_date,
+		b.step,
+		b.type,
+		u.name as `user.name`,
+		<!-- r.status as `budgetRecord.status`,
+		r.note as `budgetRecord.note`, -->
+		c.summary as `chargeDetail.summary`
+	</sql>
+	<select id = "findList" resultType = "Budget">
+		select <include refid="getList"/>
+		from budget as b 
+		left join sys_user as u on b.p_id = u.id
+		<!-- inner join budgetRecord as r on b.b_id = r.b_id -->
+		left join charge_detail as c on b.b_id = c.b_id
+		where 0=0 
+			<if test="bId != null "> 
+				and b.u_id = #{bId}
+			</if>
+			<if test="pId != null">
+				and b.p_id = #{pId}
+			</if>
+		order by b.start_date desc 
+	</select>
+	
+	<select id="get" resultType="Budget" parameterType="java.lang.String">
+		select 
+			b.b_id,
+			b.u_id,
+			b.money,
+			b.b_status,
+			b.p_id,
+			b.p_status,
+			b.result,
+			b.b_note,
+			b.p_note,
+			b.p_date,
+			b.start_date,
+			b.end_date,
+			b.step,
+			b.type
+		from budget as b 
+		where 0=0 
+			<if test="id != null "> 
+				and b.b_id = #{id}
+			</if>
+	</select>
+	
+	<select id="getBudget" resultType="Budget" parameterType="java.lang.String">
+		select 
+			b.b_id,
+			b.u_id,
+			b.money,
+			b.b_status,
+			b.p_id,
+			b.p_status,
+			b.result,
+			b.b_note,
+			b.p_note,
+			b.p_date,
+			b.start_date,
+			b.end_date,
+			b.step,
+			b.type,
+			u.name as `user.name`,
+			oi.name as `office.name`
+		from budget as b 
+		left join sys_user as u on b.u_id = u.id
+		left join sys_office as o on u.office_id = o.id
+		left join sys_office as oi on oi.id=o.parent_id
+		where b.b_id = #{bId}
+	</select>
+	
+	<insert id="insert">
+		insert into budget
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+				b_id,
+			<if test="uId != null">
+				u_id,
+			</if>
+			<if test="money != null ">
+				money,
+			</if>
+			<if test="type != null ">
+				type,
+			</if>
+			<if test="bStatus != null ">
+				b_status,
+			</if>
+			<if test="pStatus != null ">
+				p_status,
+			</if>
+			<if test="pId != null ">
+				p_id,
+			</if>
+			<if test="result != null ">
+				result,
+			</if>
+			<if test="bNote != null ">
+				b_note,
+			</if>
+			<if test="pNote != null">
+				p_note,
+			</if>
+			<if test="pDate != null ">
+				p_date,
+			</if>
+			<if test="startDate != null ">
+				start_date,
+			</if>
+			<if test="endDate != null ">
+				end_date,
+			</if>
+			<if test="isDel != null ">
+				is_del,
+			</if>
+			<if test="step != null ">
+				step,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			#{bId},
+			<if test="uId != null">
+				#{uId},
+			</if>
+			<if test="money != null ">
+				#{money},
+			</if>
+			<if test="type != null ">
+				#{type},
+			</if>
+			<if test="bStatus != null ">
+				#{bStatus},
+			</if>
+			<if test="pStatus != null ">
+				#{pStatus},
+			</if>
+			<if test="pId != null ">
+				#{pId},
+			</if>
+			<if test="result != null ">
+				#{result},
+			</if>
+			<if test="bNote != null ">
+				#{bNote},
+			</if>
+			<if test="pNote != null">
+				#{pNote},
+			</if>
+			<if test="pDate != null ">
+				#{pDate},
+			</if>
+			<if test="startDate != null ">
+				#{startDate},
+			</if>
+			<if test="endDate != null ">
+				#{endDate},
+			</if>
+			<if test="isDel != null ">
+				#{isDel},
+			</if>
+			<if test="step != null ">
+				#{step},
+			</if>
+		</trim>
+		
+	</insert>
+	
+	<update id="update">
+		update budget 
+		<set>
+			<if test="uId != null">
+				u_id = #{uId},
+			</if>
+			<if test="money != null ">
+				money = #{money},
+			</if>
+			<if test="type != null ">
+				type = #{type},
+			</if>
+			<if test="bStatus != null ">
+				b_status = #{bStatus},
+			</if>
+			<if test="pId != null ">
+				p_id = #{pId},
+			</if>
+			<if test="pStatus != null">
+				p_status = #{pStatus},
+			</if>
+			<if test="result != null ">
+				result = #{result},
+			</if>
+			<if test="bNote != null">
+				b_note = #{bNote},
+			</if>
+			<if test="pNote != null ">
+				p_note = #{pNote},
+			</if>
+			<if test="pDate != null ">
+				p_date =#{pDate},
+			</if>
+			<if test="startDate != null ">
+				start_date = #{startDate},
+			</if>
+			<if test="endDate != null ">
+				end_date = #{endDate},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel},
+			</if>
+			<if test="step != null ">
+				step = #{step},			
+			</if>
+		</set>
+	   where b_id = #{bId}
+	</update>
+	
+</mapper>

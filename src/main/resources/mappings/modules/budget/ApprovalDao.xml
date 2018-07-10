@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qFun.qFun.modules.apply.dao.ApprovalDao">
+	<sql id="getList">
+		a.id,
+		a.u_id,
+		a.t_id,
+		a.b_status,
+		a.p_id,
+		a.p_status,
+		a.result,
+		a.p_date,
+		a.start_date,
+		a.step,
+		a.is_del,
+		l.type as `leave_approval.type`,
+		l.start_date as `leave_approval.startDate`,
+		l.end_date as `leave_approval.endDate`,
+		l.days as `leave_approval.days`,
+		l.reason as `leave_approval.reason`,
+		l.create_date as `leave_approval.createDate`,
+		u.name as `user.name`
+	</sql>
+	<select id = "findList" resultType = "Approval">
+		select <include refid="getList"/>
+		from approval as a 
+		left join sys_user as u on a.p_id = u.id
+		inner join leave_approval as l on l.id = a.t_id
+		where 0=0 
+			<if test="id != null "> 
+				and a.id = #{id}
+			</if>
+			<if test="uId != null ">
+				and a.u_id = #{uId}
+			</if>
+			<if test="tId != null">
+				and a.t_id = #{tId}
+			</if>
+		order by a.start_date desc 
+	</select>
+	
+	<select id="get" resultType="Approval" parameterType="java.lang.String">
+		select 
+			a.id,
+			a.u_id,
+			a.t_id,
+			a.b_status,
+			a.p_id,
+			a.p_status,
+			a.result,
+			a.p_date,
+			a.start_date,
+			a.step,
+			a.is_del
+			from approval as a 
+			where 0=0 
+			<if test="id != null "> 
+				and a.id = #{id}
+			</if>
+	</select>
+	
+	<insert id="insert">
+		insert into approval
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+				id,
+			<if test="uId != null">
+				u_id,
+			</if>
+			<if test="tId != null">
+				t_id,
+			</if>
+			<if test="bStatus != null ">
+				b_status,
+			</if>
+			<if test="pId != null ">
+				p_id,
+			</if>
+			<if test="pStatus != null ">
+				p_status,
+			</if>
+			<if test="result != null ">
+				result,
+			</if>
+			<if test="pDate != null ">
+				p_date,
+			</if>
+			<if test="startDate != null ">
+				start_date,
+			</if>
+			<if test="step != null ">
+				step,
+			</if>
+			<if test="isDel != null">
+				is_del,
+			</if>
+			<if test="type != null">
+				type,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+				#{id},
+			<if test="uId != null">
+				#{uId},
+			</if>
+			<if test="tId != null">
+				#{tId},
+			</if>
+			<if test="bStatus != null ">
+				#{bStatus},
+			</if>
+			<if test="pId != null ">
+				#{pId},
+			</if>
+			<if test="pStatus != null ">
+				#{pStatus},
+			</if>
+			<if test="result != null ">
+				#{result},
+			</if>
+			<if test="pDate != null ">
+				#{pDate},
+			</if>
+			<if test="startDate != null ">
+				#{startDate},
+			</if>
+			<if test="step != null ">
+				#{step},
+			</if>
+			<if test="isDel != null">
+				#{isDel},
+			</if>
+			<if test="type != null ">
+				#{type},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="update">
+		update approval 
+		<set>
+			<if test="uId != null">
+				u_id = #{uId},
+			</if>
+			<if test="tId != null">
+				t_id = #{tId},
+			</if>
+			<if test="bStatus != null ">
+				b_status = #{bStatus},
+			</if>
+			<if test="pId != null ">
+				p_id = #{pId},
+			</if>
+			<if test="pStatus != null ">
+				p_status = #{pStatus},
+			</if>
+			<if test="result != null ">
+				result = #{result},
+			</if>
+			<if test="pDate != null ">
+				p_date = #{pDate},
+			</if>
+			<if test="startDate != null ">
+				start_date = #{startDate},
+			</if>
+			<if test="step != null ">
+				step = #{step},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel},
+			</if>
+			<if test="type != null">
+				type = #{type},
+			</if>
+		</set>
+	   where id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qFun.qFun.modules.attendance.dao.AttLogDao">
+	
+	<select id="findList">
+		SEELCT 
+			a.enrollNumber,
+			a.day,
+			a.month,
+			a.year,
+			a.hour,
+			a.time,
+			a.second,
+			a.minute,
+			s.name AS `user.name`,
+			s.id AS `user.id`
+		FROM att_log as a 
+		LEFT JOIN sys_user as s ON a.enrollNumber = s.enrollNumber
+		where 0=0 
+		 <if test="enrollNumber != null">
+		 	and a.enrollNumber = #{enrollNumber}
+		 </if>
+		 order by a.time desc	
+	</select>
+
+	<select id="getCurrentDayAttLog" resultType="AttLog">
+		SELECT 
+			a.enrollNumber,
+			a.day,
+			a.month,
+			a.year,
+			a.hour,
+			a.time,
+			a.second,
+			a.minute
+		FROM att_log AS a
+		WHERE 0=0 
+		<if test="year != null">
+			AND a.year = #{year}
+		</if>
+		<if test="month != null">
+			AND a.month = #{month}
+		</if>
+		<if test="day != null ">
+			AND a.day = #{day}
+		</if>
+		<if test="time != null">
+			AND a.time = #{time}
+		</if>
+		<if test="sTime != null">
+			AND (a.time between #{sTime} and #{eTime})
+		</if>
+		<if test="enrollNumber != null">
+			AND a.enrollNumber = #{enrollNumber}
+		</if>
+	 	ORDER BY a.time DESC
+	</select>
+
+	<!-- <select id="getPeriodAttLog">
+		SELECT 
+			a.enrollNumber,
+			a.day,
+			a.month,
+			a.year,
+			a.hour,
+			a.time,
+			a.second,
+			a.minute
+		FROM att_log AS a
+		WHERE 0=0 
+		<if test="sTime != null">
+			and a.time between #{sTime} and #{eTime}
+		</if>
+		<if test="enrollNumber != null">
+			AND a.enrollNumber = #{enrollNumber}
+		</if>
+	
+	</select> -->
+
+	<!-- 批量增加 -->
+	<insert id="insertBatch">
+		INSERT INTO att_log
+	            (id,enrollNumber, day, month,year,hour,time,second,minute)
+	    VALUES
+	    <foreach collection ="list" item="attLog" separator =",">
+	         (#{attLog.id},#{attLog.enrollNumber}, #{attLog.day}, #{attLog.month},#{attLog.year},#{attLog.hour},#{attLog.time},#{attLog.second},#{attLog.minute})
+	    </foreach >
+	</insert>
+		
+	
+	<delete id="truncateLog">
+		TRUNCATE TABLE att_log
+	</delete>		
+	
+	<select id="getEnrollNumberList" resultType="Integer">
+		SELECT  DISTINCT enrollNumber FROM att_log 
+	</select>
+</mapper>
